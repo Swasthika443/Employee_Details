@@ -1,0 +1,182 @@
+﻿@model Employee_Details.Models.ViewModel.EmployeeView
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<h1 class="color-text">Employee-List</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+
+<p>
+    <a asp-action="UploadExcel">Upload Excel</a>
+</p>
+
+<p>
+    <a asp-action="ExportExcel">Export Excel</a>
+</p>
+
+
+<table class="table color-text">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Employees.FirstOrDefault().FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employees.FirstOrDefault().LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employees.FirstOrDefault().Age)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employees.FirstOrDefault().Salary)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employees.FirstOrDefault().Designation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employees.FirstOrDefault().Gender)
+            </th>
+            <th></th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Employees)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.EmpId" style="text-decoration: none;color:aliceblue"> @item.FirstName </a>
+                </td>
+                <td>
+                    @item.LastName
+                </td>
+                <td>
+                    @item.Age
+                </td>
+                <td>
+                    @item.Salary
+                </td>
+                <td>
+                    @item.DesignationNavigation?.DesignationName
+                </td>
+                <td>
+                    @item.GenderNavigation?.GenderName
+                </td>
+                <td>
+
+                    <a href="javascript:void(0);" class="details-icon" onclick="showDetailsPopup('@item.FirstName', '@item.LastName', '@item.Age', '@item.Salary', '@item.Designation', '@item.Gender')"><i class="fa-sharp fa-solid fa-circle-info"></i></a>  |
+                    <a asp-action="Delete" asp-route-id="@item.EmpId"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        @if (Model.CurrentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="/Employees/Index?page=@(Model.CurrentPage-1)" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+        }
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            if (i == Model.CurrentPage)
+            {
+                <li class="page-item"><a class="page-link active" href="@Url.Action("Index", new { page = i, pageSize = Model.PageSize })"> @i</a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" href="@Url.Action("Index", new { page = i, pageSize = Model.PageSize })"> @i</a></li>
+            }
+        }
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index", new { page = Model.CurrentPage + 1, pageSize =Model.PageSize })" aria-label="Next">
+                    <span aria-hidden="true">»</span>
+                </a>
+            </li>
+        }
+    </ul>
+
+</nav>
+@if (ViewBag.FileUploaded)
+{
+    <div id="successMessage" class="alert alert-success" role="alert">
+        File uploaded successfully.
+    </div>
+
+    <script>
+        setTimeout(function () {
+            document.getElementById('successMessage').style.display = 'none';
+        }, 3000);
+    </script>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div id="error" class="alert alert-danger">@ViewBag.ErrorMessage</div>
+
+    <script>
+        setTimeout(function () {
+            document.getElementById('error').style.display = 'none';
+        }, 3000);
+    </script>
+}
+
+
+
+
+<!-- Add the details popup code below this line -->
+<div id="detailsPopup" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="detailsPopupLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsPopupLabel">Employee Details</h5>
+
+            </div>
+            <div class="modal-body" id="detailsPopupContent">
+                <!-- Details page content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Add the JavaScript code below this line -->
+<script>
+    function showDetailsPopup(firstName, lastName, age, salary, designation, gender) {
+        var detailsContent = ' ';
+        detailsContent += '<dl class="row">';
+        detailsContent += '<dt class="col-sm-4">First Name</dt>';
+        detailsContent += '<dd class="col-sm-8">' + firstName + '</dd>';
+        detailsContent += '<dt class="col-sm-4">Last Name</dt>';
+        detailsContent += '<dd class="col-sm-8">' + lastName + '</dd>';
+        detailsContent += '<dt class="col-sm-4">Age</dt>';
+        detailsContent += '<dd class="col-sm-8">' + age + '</dd>';
+        detailsContent += '<dt class="col-sm-4">Salary</dt>';
+        detailsContent += '<dd class="col-sm-8">' + salary + '</dd>';
+        detailsContent += '<dt class="col-sm-4">Designation</dt>';
+        detailsContent += '<dd class="col-sm-8">' + designation + ' </dd>'; // Add space after the designation
+        detailsContent += '<dt class="col-sm-4">Gender</dt>';
+        detailsContent += '<dd class="col-sm-8">' + gender + '</dd>';
+        detailsContent += '</dl>';
+
+
+
+        $('#detailsPopupContent').html(detailsContent);
+        $('#detailsPopup').modal('show');
+    }
+</script>

@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Employee_Details.Models.Designation>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="color-text">Designation table</h1>
+
+<p class="color-text">
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table color-text">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DesignationId)
+            </th>
+            <th>@Html.DisplayNameFor(model => model.DesignationName)</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DesignationId)
+            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DesignationName)
+                </td>
+            <td>
+                <a asp-action="Delete" asp-route-id="@item.DesignationName">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+        <script>
+            alert("@TempData["Message"]");
+        </script>
+}

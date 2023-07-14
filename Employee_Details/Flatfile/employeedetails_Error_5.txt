@@ -1,0 +1,1 @@
+KL|Rahul|101|99|11|8 - Age should be between 1 and 100, Gender should be 1 (for male), 2 (for female), or 3 (for others), Salary should be between 1000 and 100000
